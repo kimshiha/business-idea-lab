@@ -1,11 +1,25 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+
+// URL 파라미터에서 에러를 읽는 컴포넌트 (Suspense로 감싸야 함)
+function ErrorMessageHandler({ onError }: { onError: (error: string) => void }) {
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const errorParam = searchParams.get("error");
+    if (errorParam) {
+      onError(decodeURIComponent(errorParam));
+    }
+  }, [searchParams, onError]);
+
+  return null;
+}
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -13,16 +27,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const searchParams = useSearchParams();
   const supabase = createClient();
-
-  // URL 파라미터에서 에러 메시지 확인
-  useEffect(() => {
-    const errorParam = searchParams.get("error");
-    if (errorParam) {
-      setError(decodeURIComponent(errorParam));
-    }
-  }, [searchParams]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,6 +96,10 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black px-4">
       <div className="w-full max-w-md space-y-8 rounded-lg bg-white dark:bg-zinc-900 p-8 shadow-lg">
+        <Suspense fallback={null}>
+          <ErrorMessageHandler onError={setError} />
+        </Suspense>
+
         <div className="text-center">
           <h1 className="text-3xl font-bold text-black dark:text-zinc-50">
             Business Idea Lab
