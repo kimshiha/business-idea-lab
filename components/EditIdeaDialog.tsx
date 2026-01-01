@@ -30,7 +30,10 @@ export function EditIdeaDialog({ idea, onClose, onSuccess }: EditIdeaDialogProps
 
     try {
       const { error } = await updateIdea(idea.id, formData);
-      if (error) throw new Error(error);
+      if (error) {
+        const errorMessage = typeof error === 'string' ? error : error.message || '아이디어 수정에 실패했습니다.';
+        throw new Error(errorMessage);
+      }
 
       onSuccess();
       onClose();

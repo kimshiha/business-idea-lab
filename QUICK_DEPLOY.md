@@ -25,8 +25,8 @@
 **1단계: Git 사용자 정보 설정 (처음 한 번만)**
 
 ```bash
-git config --global user.email "your-email@example.com"
-git config --global user.name "Your Name"
+git config --global user.email "kimshiha@naver.com"
+git config --global user.name "kimshiha"
 ```
 
 > 💡 실제 이메일과 이름으로 변경하세요 (GitHub 계정 이메일 권장)
@@ -74,7 +74,7 @@ git push -u origin main
 
 ### 환경 변수 설정 (중요!)
 
-**Configure Project** 화면에서 **Environment Variables** 섹션 찾기
+**Configure Project** 화면에서 아래로 스크롤하여 **Environment Variables** 섹션 찾기
 
 다음 3개 변수를 추가하세요:
 
@@ -89,16 +89,44 @@ git push -u origin main
 #### 3. GEMINI_API_KEY
 - **Value**: [Google AI Studio](https://makersuite.google.com/app/apikey)에서 발급한 API 키
 
-**각 변수마다:**
-- ✅ Production 체크
-- ✅ Preview 체크
-- **Add** 클릭
+**환경 변수 추가 방법:**
+
+1. **Key** 입력란에 변수 이름 입력
+   - 예: `NEXT_PUBLIC_SUPABASE_URL`
+
+2. **Value** 입력란에 실제 값 입력
+   - 예: `https://abcdefghijklmnop.supabase.co`
+
+3. **Environment** 선택 (체크박스 또는 드롭다운)
+   - 화면에 체크박스가 보이면:
+     - ✅ **Production** 체크
+     - ✅ **Preview** 체크
+   - 드롭다운 메뉴가 보이면:
+     - **Production, Preview, Development** 모두 선택
+   - 체크박스나 드롭다운이 안 보이면:
+     - 그냥 **Add** 클릭 (기본값으로 모든 환경에 적용됨)
+
+4. **Add** 또는 **Save** 버튼 클릭
+
+5. 위 과정을 3개 변수 모두에 반복
+
+> 💡 **팁**: 체크박스가 안 보이면 그냥 변수 이름과 값만 입력하고 Add 버튼을 클릭하세요. Vercel이 자동으로 모든 환경에 적용합니다.
 
 ### 배포 시작
 
 1. 모든 환경 변수 추가 확인
-2. **Deploy** 버튼 클릭
+   - ✅ `NEXT_PUBLIC_SUPABASE_URL`: 전체 URL이 입력되었는지 확인
+   - ✅ `NEXT_PUBLIC_SUPABASE_ANON_KEY`: 전체 키가 입력되었는지 확인 (매우 긴 문자열)
+   - ✅ `GEMINI_API_KEY`: 전체 키가 입력되었는지 확인
+
+2. **Deploy** 버튼 클릭 (화면 하단의 검은색 버튼)
+
 3. 2-3분 대기
+
+4. 배포가 실패하면:
+   - **Build Logs** 클릭하여 오류 확인
+   - 환경 변수 값이 완전한지 다시 확인
+   - 수정 후 **Deploy** 버튼 다시 클릭
 
 ## ✅ 3단계: 완료!
 
@@ -166,8 +194,28 @@ git push -u origin main
 - Git 사용자 정보를 설정하세요 (위 참고)
 
 ### 배포 실패
-- 환경 변수가 모두 추가되었는지 확인
-- Vercel 대시보드 → Deployments → Logs에서 오류 확인
+
+**배포가 실패했을 때:**
+
+1. **Build Logs** 클릭하여 오류 메시지 확인
+   - 빨간색 X 아이콘이 있으면 오류가 있습니다
+   - 오류 메시지를 읽고 문제 파악
+
+2. **가장 흔한 오류들:**
+
+   **환경 변수 오류:**
+   - 환경 변수 값이 잘렸거나 불완전한 경우
+   - 각 변수의 Value를 전체 값으로 다시 입력
+   - 특히 `NEXT_PUBLIC_SUPABASE_ANON_KEY`는 매우 긴 문자열입니다
+
+   **빌드 오류:**
+   - `npm install` 실패: 패키지 문제
+   - `npm run build` 실패: 코드 오류
+   - Build Logs에서 정확한 오류 확인
+
+3. **해결 방법:**
+   - 환경 변수 수정 후 **Deploy** 버튼 다시 클릭
+   - 코드 오류면 로컬에서 `npm run build` 테스트 후 수정
 
 ### 사이트가 작동하지 않음
 - Supabase 프로젝트가 활성화되어 있는지 확인

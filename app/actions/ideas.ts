@@ -96,11 +96,16 @@ export async function updateIdea(id: string, updates: IdeaUpdate) {
     .select()
     .single();
 
-  if (!error) {
-    revalidatePath("/");
+  if (error) {
+    console.error("아이디어 수정 오류:", error);
+    return {
+      data: null,
+      error: error.message || "아이디어 수정에 실패했습니다.",
+    };
   }
 
-  return { data: data as Idea | null, error };
+  revalidatePath("/");
+  return { data: data as Idea | null, error: null };
 }
 
 export async function deleteIdea(id: string) {
